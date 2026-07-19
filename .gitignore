@@ -55,3 +55,6 @@ client_secret_*.json
 
 # Local SEO research
 seo与geo/
+
+# AI skills (reinstall with: npx skills add)
+.claude/
