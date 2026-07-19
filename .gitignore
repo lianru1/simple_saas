@@ -49,3 +49,9 @@ pnpm-lock.yaml
 #
 .github
 .vscode
+
+# Google OAuth client secrets
+client_secret_*.json
+
+# Local SEO research
+seo与geo/

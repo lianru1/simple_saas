@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(node --version)",
+      "PowerShell(npx skills add pbakaus/impeccable)",
+      "PowerShell(npx skills add AgriciDaniel/claude-seo)",
+      "PowerShell(git -C \"d:\\\\agent-project\\\\����skmint\" status --short)",
+      "PowerShell($agents = Get-ChildItem -Recurse -File \"d:\\\\agent-project\\\\灵酝skmint\\\\.agents\" | ForEach-Object { $_.FullName.Replace\\(\"d:\\\\agent-project\\\\灵酝skmint\\\\.agents\", \"\"\\) }; $claude = Get-ChildItem -Recurse -File \"d:\\\\agent-project\\\\灵酝skmint\\\\.claude\" | ForEach-Object { $_.FullName.Replace\\(\"d:\\\\agent-project\\\\灵酝skmint\\\\.claude\", \"\"\\) }; Write-Host \"=== Only in .agents ===\"; $agents | Where-Object { $_ -notin $claude }; Write-Host \"=== Only in .claude ===\"; $claude | Where-Object { $_ -notin $agents })",
+      "PowerShell($files = Get-ChildItem -Recurse -File \"d:\\\\agent-project\\\\灵酝skmint\\\\.claude\\\\skills\" -ErrorAction SilentlyContinue; Write-Host \"File count: $\\($files.Count\\)\"; if \\($files.Count -gt 0\\) { $files | Select-Object -First 10 FullName })",
+      "PowerShell($src = \"d:\\\\agent-project\\\\灵酝skmint\\\\.agents\\\\skills\"; $dst = \"d:\\\\agent-project\\\\灵酝skmint\\\\.claude\\\\skills\"; Get-ChildItem -Directory \"$src\" | ForEach-Object { $skillName = $_.Name; $targetDir = \"$dst\\\\$skillName\"; if \\(-not \\(Test-Path \"$targetDir\"\\)\\) { New-Item -ItemType Directory -Force \"$targetDir\" | Out-Null }; Write-Host \"Moving: $skillName\"; robocopy \"$src\\\\$skillName\" \"$targetDir\" /E /MOVE /NFL /NDL /NJH /NJS }; Write-Host \"Done moving files\")",
+      "PowerShell($remaining = Get-ChildItem -Recurse -File \"d:\\\\agent-project\\\\灵酝skmint\\\\.agents\" -ErrorAction SilentlyContinue; if \\($remaining.Count -eq 0\\) { Remove-Item -Recurse -Force \"d:\\\\agent-project\\\\灵酝skmint\\\\.agents\"; Write-Host \".agents/ deleted successfully\" } else { Write-Host \"WARNING: .agents/ still has $\\($remaining.Count\\) files, not deleting\" })",
+      "PowerShell(Remove-Item -Recurse -Force \"d:\\\\agent-project\\\\灵酝skmint\\\\.agents\" -ErrorAction Stop; if \\(-not \\(Test-Path \"d:\\\\agent-project\\\\灵酝skmint\\\\.agents\"\\)\\) { Write-Host \"✓ .agents/ deleted\" } else { Write-Host \"✗ still exists\" })",
+      "PowerShell(git -C \"d:\\\\agent-project\\\\����skmint\" remote -v)",
+      "PowerShell(git -C \"d:\\\\agent-project\\\\����skmint\" remote set-url origin https://github.com/lianru1/simple_saas.git)",
+      "PowerShell(git ls-remote https://github.com/pbakaus/impeccable.git HEAD 2>&1)",
+      "PowerShell(Get-ChildItem -Recurse -File -Filter \"SKILL.md\" -Path \"$env:USERPROFILE\\\\.claude\" -ErrorAction SilentlyContinue | Select-Object FullName; Get-ChildItem -Recurse -File -Filter \"SKILL.md\" -Path \"$env:LOCALAPPDATA\\\\Temp\" -ErrorAction SilentlyContinue 2>$null | Select-Object -First 5 FullName)"
+    ]
+  }
+}
