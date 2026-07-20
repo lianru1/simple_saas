@@ -7,8 +7,9 @@ import {
   addCreditsToCustomer,
 } from "@/utils/supabase/subscriptions";
 import crypto from "crypto";
+import { ENV } from "@/lib/env";
 
-const CREEM_WEBHOOK_SECRET = process.env.CREEM_WEBHOOK_SECRET!;
+const CREEM_WEBHOOK_SECRET = ENV.CREEM_WEBHOOK_SECRET;
 
 export async function POST(request: Request) {
   try {
@@ -53,7 +54,7 @@ export async function POST(request: Request) {
         break;
       default:
         console.log(
-          `Unhandled event type: ${event.eventType} ${JSON.stringify(event)}`
+          `Unhandled event type: ${event.eventType} (object id: ${event.object?.id})`
         );
     }
 
@@ -71,12 +72,12 @@ export async function POST(request: Request) {
 
 async function handleCheckoutCompleted(event: CreemWebhookEvent) {
   const checkout = event.object;
-  console.log("Processing completed checkout:", checkout);
+  console.log("Processing completed checkout:", checkout.order?.id);
 
   try {
     // Validate required data
     if (!checkout.metadata?.user_id) {
-      console.error("Missing user_id in checkout metadata:", checkout);
+      console.error("Missing user_id in checkout metadata for order:", checkout.order?.id);
       throw new Error("user_id is required in checkout metadata");
     }
 
@@ -107,7 +108,7 @@ async function handleCheckoutCompleted(event: CreemWebhookEvent) {
 
 async function handleSubscriptionActive(event: CreemWebhookEvent) {
   const subscription = event.object;
-  console.log("Processing active subscription:", subscription);
+  console.log("Processing active subscription:", subscription.id);
 
   try {
     // Create or update customer
@@ -119,14 +120,14 @@ async function handleSubscriptionActive(event: CreemWebhookEvent) {
     // Create or update subscription
     await createOrUpdateSubscription(subscription, customerId);
   } catch (error) {
-    console.error("Error handling subscription active:", error);
+    console.error("Error handling subscription active for:", subscription.id, error);
     throw error;
   }
 }
 
 async function handleSubscriptionPaid(event: CreemWebhookEvent) {
   const subscription = event.object;
-  console.log("Processing paid subscription:", subscription);
+  console.log("Processing paid subscription:", subscription.id);
 
   try {
     // Update subscription status and period
@@ -136,14 +137,14 @@ async function handleSubscriptionPaid(event: CreemWebhookEvent) {
     );
     await createOrUpdateSubscription(subscription, customerId);
   } catch (error) {
-    console.error("Error handling subscription paid:", error);
+    console.error("Error handling subscription paid for:", subscription.id, error);
     throw error;
   }
 }
 
 async function handleSubscriptionCanceled(event: CreemWebhookEvent) {
   const subscription = event.object;
-  console.log("Processing canceled subscription:", subscription);
+  console.log("Processing canceled subscription:", subscription.id);
 
   try {
     // Update subscription status
@@ -153,14 +154,14 @@ async function handleSubscriptionCanceled(event: CreemWebhookEvent) {
     );
     await createOrUpdateSubscription(subscription, customerId);
   } catch (error) {
-    console.error("Error handling subscription canceled:", error);
+    console.error("Error handling subscription canceled for:", subscription.id, error);
     throw error;
   }
 }
 
 async function handleSubscriptionExpired(event: CreemWebhookEvent) {
   const subscription = event.object;
-  console.log("Processing expired subscription:", subscription);
+  console.log("Processing expired subscription:", subscription.id);
 
   try {
     // Update subscription status
@@ -170,14 +171,14 @@ async function handleSubscriptionExpired(event: CreemWebhookEvent) {
     );
     await createOrUpdateSubscription(subscription, customerId);
   } catch (error) {
-    console.error("Error handling subscription expired:", error);
+    console.error("Error handling subscription expired for:", subscription.id, error);
     throw error;
   }
 }
 
 async function handleSubscriptionTrialing(event: CreemWebhookEvent) {
   const subscription = event.object;
-  console.log("Processing trialing subscription:", subscription);
+  console.log("Processing trialing subscription:", subscription.id);
 
   try {
     // Update subscription status
@@ -187,7 +188,7 @@ async function handleSubscriptionTrialing(event: CreemWebhookEvent) {
     );
     await createOrUpdateSubscription(subscription, customerId);
   } catch (error) {
-    console.error("Error handling subscription trialing:", error);
+    console.error("Error handling subscription trialing for:", subscription.id, error);
     throw error;
   }
 }

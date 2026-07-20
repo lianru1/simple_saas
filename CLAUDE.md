@@ -71,16 +71,25 @@
 - ✅ 响应式设计 + 暗色/亮色模式
 - ✅ shadcn/ui 组件库
 
-### 3.2 待开发的（灵酝核心功能）
+### 4.2 已完成的（灵酝核心功能，2025-07-19）
 
-- ⬜ `/brew` — 酝酿向导页（三步表单）
-- ⬜ `/api/distill` — 蒸馏 AI 接口
-- ⬜ `/api/chat` — 品鉴聊天接口
-- ⬜ `/skill/[id]` — Skill 品鉴页（聊天窗口）
-- ⬜ Prisma Schema 与数据库迁移
-- ⬜ 商业双轨逻辑（host 托管 / draw 买断）
-- ⬜ LLM 集成（Vercel AI SDK）
-- ⬜ 品牌 UI 改造（雾紫 #7B68EE + 深灰背景）
+- ✅ `/brew` — 酝酿向导页（三步表单 + 文件上传 + 模式选择）
+- ✅ `/api/distill` — 蒸馏 AI 接口（DeepSeek）
+- ✅ `/api/chat` — 品鉴聊天接口（流式 SSE）
+- ✅ `/api/upload/extract` — 文件提取接口（.txt .md .pdf .docx）
+- ✅ `/skill/[id]` — Skill 品鉴页（聊天窗口 + 下载/分享）
+- ✅ 商业双轨逻辑（host 托管 + draw 买断，定价已接入）
+- ✅ 积分系统接入（蒸馏扣 1 积分，余额检查）
+- ✅ Dashboard Skills 列表（查看、复制链接、删除）
+- ✅ 全站英文文案（个人化调性）
+- ✅ OKLCH 暗色/亮色主题
+
+### 4.3 待开发的（P0 → P3，详见 DEVELOPMENT_PLAN.md）
+
+- ⬜ **P0**：定价页重写（替换模板）、Creem 商品 ID 替换、CTA 文案修复
+- ⬜ **P1**：Draw 购买流程、配额扣减 bug 修复、移动端适配、SEO 基础、积分耗尽体验
+- ⬜ **P2**：首页动效、品鉴页优化、仪表板改进、蒸馏流程优化、Header 导航改进
+- ⬜ **P3**：品牌 UI 全面改造、Logo/视觉资产、pgvector 嵌入、RLHF、多语言
 
 ---
 
@@ -145,8 +154,8 @@
 
 #### 6.2.3 商业双轨
 
-- **host**（托管）：自动生成分享链接，任何人可试聊 3 次
-- **draw**（出窖/买断）：一次性付费下载，个人中心显示【出窖】按钮
+- **host**（托管）：自动生成分享链接，任何人可免费试聊（次数由创作者设定 `quota_total`，默认 50 次）
+- **draw**（出窖/买断）：免费试聊 **2 次**后显示付费墙，用户用积分买断后永久访问 + 可下载（2025-07-19 决策确认）
 
 ### 6.3 API 接口
 
@@ -209,15 +218,16 @@ model Skill {
 - RLHF 点赞/点踩优化
 - 导出为 OpenAI Assistant 格式
 
-### 6.7 商业模式与定价（已确定：积分体系）
+### 6.7 商业模式与定价（已确定：MVP 仅积分包）
 
-#### 三种收费类型
+> **2025-07-19 决策**：MVP 只用积分包模式，会员订阅延后讨论。理由是——积分已经涵盖了"蒸馏消耗"和"买断 Skill"两个场景，再加订阅会让 MVP 变复杂。等验证了用户愿意付费后，再考虑加订阅制。
+
+#### MVP 收费类型（2 种）
 
 | # | 收费类型 | 用户付钱的原因 | 谁来定价 | Creem 配置 |
 |---|---------|-------------|---------|-----------|
-| **① 会员订阅** | 解锁蒸馏次数上限 + 无限品鉴 | 平台固定价格 | SUBSCRIPTION_TIERS |
-| **② 买断 Skill** | 用积分兑换，永久下载某个 Skill | 创作者定积分价 | 不直接在 Creem 建商品 |
-| **③ 积分包** | 买积分，用于蒸馏 + 买断 Skill | 平台固定价格 | CREDITS_TIERS |
+| ① | 积分包 | 买积分，用于蒸馏 + 买断 Skill | 平台固定价格 | CREDITS_TIERS |
+| ② | 买断 Skill | 用积分兑换，永久下载某个 Skill | 创作者定积分价 | 不直接在 Creem 建商品 |
 
 #### 积分体系流程
 
@@ -347,7 +357,119 @@ skmint/
 
 ---
 
-## 10. 环境变量参考
+## 10. 品牌视觉资产
+
+> **2025-07-19**：品牌色 `#7B68EE` 需要设计师调校，视觉资产（Logo、品牌字、标语、装饰图）尚未准备好。以下为生图提示词，用于 Midjourney / DALL·E / Stable Diffusion。
+
+### 10.1 品牌关键词
+
+- 核心隐喻：酿酒、蒸馏、窖藏、品鉴
+- 氛围：手艺感、私密、沉静、温暖
+- 不是：科技炫酷、AI 模板化、企业商务
+- 中文名「灵酝」= spirit + brew，英文名「skmint」= skill + mint
+
+### 10.2 Logo 提示词
+
+```
+A minimalist logo for a brand called "skmint" — a platform that distills human expertise into AI personalities. The brand metaphor is craft distillery meets personal knowledge. Design a clean, iconic mark that combines: a copper alembic still OR a glass bottle OR a drop of liquid, with a subtle nod to a brain/synapse or a fingerprint. Style: Japanese minimalism meets artisan apothecary. Colors: muted purple (#7B68EE) on deep charcoal (#111827). No gradients. Vector logo, white background, centered composition. The mark should work at small sizes (favicon) and feel premium and intimate — not corporate, not tech-bro. --no text --no complex detail --style minimalist
+```
+
+~~~
+我自己改的一版
+Professional graphic design logomark for "skmint" — no text, no lettering. Concept: a geometric abstraction of an oak barrel using precise negative space. Visualize a softened rounded-square container where a single, delicate horizontal line bisects the form (evoking the liquid level and the cooper's hoop), accompanied by a perfectly circular aperture or dot representing a drop of distilled essence. Execution must follow Swiss minimalist branding principles: optical balance, mathematical proportions, grid-based construction, and absolute simplicity. Avoid any literal drawing of wood, barrels, or liquid; imply the metaphor through pure form. Style: modern tech-meets-craft, premium and confident — not illustrative, not rustic. Color: flat muted purple #7B68EE on pure white background. Single-weight clean stroke, vector precision, zero gradients, zero textures, zero 3D. Designed explicitly to function as a favicon, app icon, and social avatar.
+~~~
+
+### 10.3 品牌字（Wordmark）提示词
+
+```
+下面也是我改过的，这个更符合我的感觉
+Hand-drawn calligraphy wordmark for "skmint", elegant modern script lettering with a flowing, dancing baseline. Thick-to-thin ink strokes, visible pen pressure, and a subtle ink bleed texture on paper — like a master distiller's handwritten label on a limited-edition bottle. Delicate ligature connecting 'm' to 'i' and 't', flourishes on the descenders. Warm, intimate, artisanal, and slightly imperfect (not vector-perfect). Muted purple #7B68EE ink color, rendered on a deep charcoal #111827 textured paper background. Minimalist, high-end craft aesthetic, no neon, no gradients, no digital gloss.
+
+(printed text, sans-serif, block letters, computer font, vector outline, symmetrical, rigid baseline:1.4), (childish handwriting, chicken scratch)
+```
+
+### 10.4 中文品牌字提示词
+
+```
+Chinese calligraphy-inspired lettering for "灵酝" (spirit brew). Style: semi-cursive (行书) with modern restraint — not traditional scroll, not graffiti. The characters should feel fluid and warm, like the label on a cherished bottle of aged wine, handwritten by the vintner. Ink on handmade paper texture, slight bleed at the stroke edges. Color: muted purple #7B68EE on deep charcoal #111827 background. The brand bottles human expertise into AI personas — the lettering should evoke "craft, personal, time-aged, precious" — not factory-printed, not digital.
+```
+
+(暂缓)
+
+### 10.5 标语（Tagline）
+
+备选方案（待确认）：
+
+- "Your mind, bottled." — 简洁，个人化
+- "Distill your expertise. Share your spirit." — 当前使用中（用这个）
+- "Everyone has a voice. Bottle yours." — 更包容
+- "Brew yourself." — 极简
+
+### 10.6 页面装饰图提示词
+
+**Hero 区背景/插画**：
+
+```
+A warm, atmospheric illustration for a website hero section. Scene: the interior of a small countryside estate cellar at dusk — oak barrels stacked along stone walls, soft amber light filtering through a small high window, dust motes floating in the light. On an old wooden worktable in the foreground: scattered handwritten notes, a leather-bound journal open, a single dark glass bottle catching the light, a wax seal stamp. The feeling is quiet, personal, timeless — like a master vintner's private study, not a factory. Color palette: muted purple (#7B68EE) accents on deep charcoal (#111827) shadows, warm amber (#C88A4A) highlights. No faces, no text, no UI elements. Horizontal composition, subtle film grain. Not scientific, not laboratory, not industrial. --ar 16:9
+```
+
+**How It Works 区配图**：
+
+```
+Three-panel triptych illustration for a knowledge craft platform. The visual metaphor is artisan winemaking in a countryside estate — not a laboratory, not a factory.
+
+Panel 1 — "Gather": A weathered wooden table in a sunlit estate garden. Scattered across it: handwritten letters, old notebooks, photographs, a few sprigs of dried herbs. The raw ingredients of a life — messy, personal, real. Warm morning light, shallow depth of field.
+
+Panel 2 — "Age": Inside the estate cellar. Rows of oak barrels with chalk marks and dates. One barrel in the foreground, slightly open — a warm, faintly glowing amber light seeps from within, suggesting something transforming quietly inside. Stone walls, cool shadows, a single copper tasting cup on a barrel top. The feeling is patience and craft — slow transformation, not mechanical processing.
+
+Panel 3 — "Bottle": A single dark glass bottle on an aged wooden shelf, sealed with deep purple wax. A handwritten parchment label tied with twine. Soft, warm light catches the bottle from one side. Below the shelf, a pair of tasting glasses wait. Ready to be shared. Intimate, precious, complete.
+
+Style: painterly line art with selective muted color accents (purple #7B68EE, warm amber #C88A4A, deep charcoal #111827). Not watercolor, not vector-flat, not scientific diagram. Loose but deliberate — like an artisan's sketchbook. Three square panels, equal size. --ar 1:1
+```
+
+**纹理/背景装饰**：
+
+```
+Subtle background texture for a dark-themed craft website. Fine handmade paper grain, barely visible. Faint hints of: wood grain from old barrel staves, the circular ring mark left by a glass on wood, and the gentle irregularity of handmade cotton paper. Deep charcoal (#111827) base. The texture should be so subtle it's almost not there — only visible on closer look. Seamless tileable. No text, no logos, no obvious patterns, no cork texture (too on-the-nose). --ar 1:1 --style raw
+```
+
+### 10.7 资产状态追踪
+
+| 资产 | 状态 | 文件位置 |
+|------|------|---------|
+| Logo (icon) | ✅ 已完成 | `public/images/logo.png` |
+| Wordmark (skmint) | ✅ 已完成 | `public/images/品牌字.png` |
+| 中文品牌字 (灵酝) | ⬜ 暂缓 | — |
+| 标语 | ⬜ 待确认 | 从备选方案中选 |
+| Hero 插画 | ✅ 已完成 | `public/images/页面装饰图.png` |
+| 三步流程插画 (Gather) | ✅ 已完成 | `public/images/区配图1-gather.png` |
+| 三步流程插画 (Age) | ✅ 已完成 | `public/images/区配图2-age.png` |
+| 三步流程插画 (Bottle) | ✅ 已完成 | `public/images/区配图3-Minted​.png` |
+| 背景纹理 | ✅ 已完成 | `public/images/纹理.png` |
+| Favicon | ⬜ 依赖 Logo | Logo 确定后可基于 `logo.png` 生成 |
+
+---
+
+## 11. 重要决策记录
+
+> 每次双方确认的决策都记录在此，按时间倒序。
+
+### 2025-07-19
+
+| 决策 | 结论 | 理由 |
+|------|------|------|
+| MVP 商业模式 | **仅积分包**，不做会员订阅 | 积分已覆盖蒸馏 + 买断两个场景，再加订阅会让 MVP 变复杂。验证付费意愿后再考虑订阅 |
+| Draw 免费试聊 | **2 次** | 给买家尝尝味道，1 次太少，3 次太多 |
+| 积分定价 | **$9=3积分、$15=6积分、$20=9积分**（每积分成本递减：$3 → $2.50 → $2.22） | 用户确认。价格递减逻辑合理，每档都有吸引力 |
+| 域名 | **skmint.tech** | 最终确定，不再更改 |
+| 品牌色 | `#7B68EE` 需要设计师调校 | 需要配合实际视觉资产一起调整 |
+| 视觉资产 | Logo、品牌字、标语、装饰图全部需要 | 用户自行生图后提供给我 |
+| 开发计划 | P0→P1→P2→P3 四轮推进 | 先修阻塞问题，再补完整体验，最后打磨 |
+| CLAUDE.md 维护 | 每次讨论确认后同步更新 | 作为项目的唯一事实来源 |
+
+---
+
+## 12. 环境变量参考
 
 | 变量 | 用途 | 获取位置 |
 |------|------|---------|
@@ -358,6 +480,6 @@ skmint/
 | `CREEM_WEBHOOK_SECRET` | Creem Webhook 签名密钥 | Creem → Developers → Webhooks |
 | `CREEM_API_URL` | Creem API 地址 | 测试: `https://test-api.creem.io/v1` / 正式: `https://api.creem.io` |
 | `CREEM_TEST_MODE` | 是否测试模式 | `true`（测试）/ `false`（正式） |
-| `BASE_URL` | 网站地址 | 本地: `http://localhost:3000` / 线上: `https://你的域名` |
-| `CREEM_SUCCESS_URL` | 支付成功后跳转地址 | `https://你的域名/dashboard` |
+| `BASE_URL` | 网站地址 | 本地: `http://localhost:3000` / 线上: `https://skmint.tech` |
+| `CREEM_SUCCESS_URL` | 支付成功后跳转地址 | `https://skmint.tech/dashboard` |
 | `OPENAI_API_KEY` 或 `ANTHROPIC_API_KEY` | AI 模型密钥（后续添加） | OpenAI/Anthropic 后台 |

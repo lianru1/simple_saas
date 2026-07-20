@@ -7,15 +7,13 @@ const footerLinks = [
   {
     title: "Product",
     links: [
-      { label: "Features", href: "/#features" },
+      { label: "How It Works", href: "/#how-it-works" },
       { label: "Pricing", href: "/#pricing" },
     ],
   },
   {
     title: "Company",
-    links: [
-      { label: "About", href: "/about" },
-    ],
+    links: [{ label: "About", href: "/about" }],
   },
   {
     title: "Legal",
@@ -33,9 +31,8 @@ export function Footer() {
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-6">
           <div className="col-span-full lg:col-span-2">
             <Logo />
-            <p className="mt-4 text-sm text-muted-foreground">
-              Starter kit for your next project. Built with Next.js and
-              Creem.io.
+            <p className="mt-4 text-sm text-muted-foreground max-w-xs">
+              Distill your expertise. Share your spirit.
             </p>
           </div>
           <div className="col-span-2 grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-4">

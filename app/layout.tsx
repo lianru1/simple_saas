@@ -3,7 +3,11 @@ import { Footer } from "@/components/footer";
 import { ThemeProvider } from "next-themes";
 import { createClient } from "@/utils/supabase/server";
 import { Toaster } from "@/components/ui/toaster";
+import { validateEnv } from "@/lib/env";
 import "./globals.css";
+
+// 启动时校验所有必需的环境变量（缺失则立即报错，不静默降级）
+validateEnv();
 
 const baseUrl = process.env.BASE_URL
   ? `${process.env.BASE_URL}`
@@ -11,19 +15,25 @@ const baseUrl = process.env.BASE_URL
 
 export const metadata = {
   metadataBase: new URL(baseUrl),
-  title: "Simple Saas Starter Kit",
-  description: "The ultimate Next.js starter kit with Supabase Auth, Creem Payments, and a production-ready dashboard.",
-  keywords: "Next.js starter kit, SaaS boilerplate, Supabase, Creem payments, TypeScript",
+  title: "skmint — Distill Your Expertise into AI Personas",
+  description:
+    "Turn your knowledge and experience into a conversational AI personality. Brew, host, and monetize your expertise with skmint.",
+  keywords:
+    "AI personality, knowledge distillation, AI persona, skill minting, distill expertise, brew AI, skmint",
   openGraph: {
-    title: "Simple Saas Starter Kit",
-    description: "The ultimate Next.js starter kit with Supabase Auth, Creem Payments, and a production-ready dashboard.",
+    title: "skmint — Distill Your Expertise into AI Personas",
+    description:
+      "Turn your knowledge and experience into a conversational AI personality. Brew, host, and monetize your expertise.",
     type: "website",
     url: baseUrl,
+    images: [{ url: `${baseUrl}/images/logo.png`, width: 512, height: 512 }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Simple Saas Starter Kit",
-    description: "The ultimate Next.js starter kit with Supabase Auth, Creem Payments, and a production-ready dashboard.",
+    title: "skmint — Distill Your Expertise into AI Personas",
+    description:
+      "Turn your knowledge and experience into a conversational AI personality. Brew, host, and monetize your expertise.",
+    images: [`${baseUrl}/images/logo.png`],
   },
 };
 
@@ -42,7 +52,7 @@ export default async function RootLayout({
       <body className="bg-background text-foreground" suppressHydrationWarning>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >

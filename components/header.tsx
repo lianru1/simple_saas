@@ -21,17 +21,15 @@ export default function Header({ user }: HeaderProps) {
   const pathname = usePathname();
   const isDashboard = pathname?.startsWith("/dashboard");
 
-  // Main navigation items for generic SaaS
   const mainNavItems: NavItem[] = [
     { label: "Home", href: "/" },
-    { label: "Features", href: "/#features" },
+    { label: "How It Works", href: "/#how-it-works" },
+    { label: "Taste", href: "/taste" },
     { label: "Pricing", href: "/#pricing" },
   ];
 
-  // Dashboard items - empty array as we don't want navigation items in dashboard
   const dashboardItems: NavItem[] = [];
 
-  // Choose which navigation items to show
   const navItems = isDashboard ? dashboardItems : mainNavItems;
 
   return (
@@ -40,14 +38,13 @@ export default function Header({ user }: HeaderProps) {
         <div className="flex items-center">
           <Logo />
         </div>
-        
-        {/* Centered Navigation */}
+
         <nav className="hidden md:flex items-center gap-8 absolute left-1/2 transform -translate-x-1/2">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="text-lg font-semibold text-muted-foreground transition-colors hover:text-primary"
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
             >
               {item.label}
             </Link>
@@ -80,7 +77,7 @@ export default function Header({ user }: HeaderProps) {
                 <Link href="/sign-in">Sign in</Link>
               </Button>
               <Button asChild size="sm">
-                <Link href="/sign-up">Sign up</Link>
+                <Link href="/sign-up">Sign Up</Link>
               </Button>
             </div>
           )}

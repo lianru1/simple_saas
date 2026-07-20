@@ -98,33 +98,30 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 检查积分是否足够
-    if (customer.credits < amount) {
+    // 检查积分是否足够 — 使用原子更新（WHERE credits >= amount）防止竞态
+    const { data: updatedCustomer, error: updateError } = await supabase
+      .from('customers')
+      .update({
+        credits: customer.credits - amount,
+        updated_at: new Date().toISOString()
+      })
+      .eq('user_id', user.id)
+      .gte('credits', amount)
+      .select()
+      .single();
+
+    if (updateError || !updatedCustomer) {
       return NextResponse.json(
         { error: 'Insufficient credits' },
         { status: 400 }
       );
     }
 
-    // 更新积分
-    const newCredits = customer.credits - amount;
-    const { data: updatedCustomer, error: updateError } = await supabase
-      .from('customers')
-      .update({
-        credits: newCredits,
-        updated_at: new Date().toISOString()
-      })
-      .eq('user_id', user.id)
-      .select()
-      .single();
+    const newCredits = updatedCustomer.credits;
 
-    if (updateError) {
-      console.error('Error updating credits:', updateError);
-      return NextResponse.json(
-        { error: 'Failed to update credits' },
-        { status: 500 }
-      );
-    }
+    // 校验 operation 白名单，防止任意字符串写入数据库
+    const ALLOWED_OPERATIONS = ['brew', 'purchase', 'chat', 'name_generation'];
+    const safeOperation = ALLOWED_OPERATIONS.includes(operation) ? operation : 'name_generation';
 
     // 记录积分消费历史
     const { error: historyError } = await supabase
@@ -133,9 +130,9 @@ export async function POST(request: NextRequest) {
         customer_id: customer.id,
         amount: amount,
         type: 'subtract',
-        description: operation || 'name_generation',
+        description: safeOperation,
         metadata: {
-          operation: operation,
+          operation: safeOperation,
           credits_before: customer.credits,
           credits_after: newCredits
         }
